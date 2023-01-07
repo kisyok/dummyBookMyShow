@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,7 @@ import com.dummy.bookmyshow.entity.User;
 import com.dummy.bookmyshow.enums.UserType;
 import com.dummy.bookmyshow.repository.UserRepository;
 import com.dummy.bookmyshow.security.AuthRequest;
+import com.dummy.bookmyshow.security.CustomUserDetailService;
 import com.dummy.bookmyshow.security.JwtUtils;
 import com.dummy.bookmyshow.util.ResponseParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,10 +48,13 @@ public class UserController {
 	private JwtUtils jwtUtils;
 
 	@Autowired
-	private UserRepository userReposiitory;
+	private UserRepository userRepository;
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
+
+	@Autowired
+	private CustomUserDetailService customUserDetailService;
 
 	/**
 	 * get the user details
@@ -60,7 +65,7 @@ public class UserController {
 	public ResponseEntity<Object> getUserDetails(@RequestParam("userName") String userName) {
 		this.LOGGER.info(" getUser () with input params:  " + userName);
 		try {
-			User user = this.userReposiitory.findUserByUserName(userName);
+			User user = this.userRepository.findUserByUserName(userName);
 			this.LOGGER.info(" getUser () found the user with input username " + user.toString());
 			
 			ObjectMapper mapper = new ObjectMapper();
@@ -92,7 +97,7 @@ public class UserController {
 			newUser.setUserName(userName);
 			newUser.setCreatedOn(LocalDateTime.now());
 			this.LOGGER.info("addUser() setting username as   " + newUser.getUserName());
-			this.userReposiitory.save(newUser);
+			this.userRepository.save(newUser);
 			this.LOGGER.info("successfully saved user object " + newUser.toString());
 			return new ResponseEntity<>(this.responseParser.build(HttpStatus.CREATED.value(), "Successfully saved user with user name: "+newUser.getUserName(),
 					"Successfully saved user with user name: "+newUser.getUserName()), HttpStatus.CREATED);
@@ -125,7 +130,9 @@ public class UserController {
 					"getToken() called with username as : " + authRequest.getUsername() + " and password as : *****");
 			authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-			String token = jwtUtils.generateToken(authRequest.getUsername());
+			
+			final UserDetails userDetails = customUserDetailService.loadUserByUsername(authRequest.getUsername());
+			String token = jwtUtils.generateToken(userDetails);
 			this.LOGGER.info("getToken() successfully got the jwt token " + token);
 			result.put("token", token);
 			result.put("status", "success");
