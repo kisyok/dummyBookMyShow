@@ -28,6 +28,7 @@ import com.dummy.bookmyshow.util.ResponseParser;
 @Configuration
 public class MovieController {
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+	
 	@Autowired
 	private ResponseParser responseParser;
 

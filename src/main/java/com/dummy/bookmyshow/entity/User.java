@@ -19,7 +19,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Entity
 @Table(name = "user")
 public class User implements Serializable {
-
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "first_name", nullable = false)
@@ -147,9 +146,4 @@ public class User implements Serializable {
 				+ authentication + ", createdOn=" + createdOn + ", updatedOn=" + updatedOn + ", deleted=" + deleted
 				+ "]";
 	}
-
-	
-	
-
-	
 }

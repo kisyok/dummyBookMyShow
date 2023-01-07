@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Table(name = "movie")
 public class Movie implements Serializable {
 	private static final long serialVersionUID = -2343243243242432341L;
+
 	@Id
 	private String movieId;
 	
@@ -63,7 +64,6 @@ public class Movie implements Serializable {
 	
 	@Column(name = "duration")
 	private String duration;
-	
 	
 	@Column(name = "created_on")
 	@DateTimeFormat(iso = ISO.DATE_TIME)
@@ -239,12 +239,4 @@ public class Movie implements Serializable {
 				+ createdOn + ", updatedOn=" + updatedOn + ", deleted=" + deleted + ", director=" + director + ", plot="
 				+ plot + "]";
 	}
-
-	
-
-	
-	
-
-	
-	
 }

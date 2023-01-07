@@ -16,8 +16,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Entity
 @Table(name = "theater")
 public class Theater implements Serializable {
-
 	private static final long serialVersionUID = 1L;
+	
 	@Id
 	@Column(name = "theater_id")
 	private String theaterId;
@@ -154,5 +154,4 @@ public class Theater implements Serializable {
 				+ ", name=" + name + ", languages=" + languages + ", createdOn=" + createdOn + ", updatedOn="
 				+ updatedOn + ", deleted=" + deleted + ", userName=" + userName + "]";
 	}
-
 }

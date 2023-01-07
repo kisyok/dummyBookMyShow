@@ -7,7 +7,6 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class SeatMatrixPk implements Serializable {
-
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "movie_id")
@@ -59,5 +58,4 @@ public class SeatMatrixPk implements Serializable {
 		return "SeatMatrixPk [movieId=" + movieId + ", theaterId=" + theaterId + ", screenStartsAt=" + screenStartsAt
 				+ ", seatNumber=" + seatNumber + "]";
 	}
-
 }

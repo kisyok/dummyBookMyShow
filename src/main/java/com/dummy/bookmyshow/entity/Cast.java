@@ -12,7 +12,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "cast")
 public class Cast implements Serializable {
-
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -77,7 +76,4 @@ public class Cast implements Serializable {
 		return "Cast [id=" + id + ", movieId=" + movieId + ", characterName=" + characterName + ", characterOccupation="
 				+ characterOccupation + ", castDetails=" + castDetails + "]";
 	}
-
-	
-	
 }

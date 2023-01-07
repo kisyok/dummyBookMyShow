@@ -13,7 +13,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "url")
 public class Url implements Serializable{
-
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -55,7 +54,4 @@ public class Url implements Serializable{
 	public String toString() {
 		return "Url [id=" + id + ", originalUrl=" + originalUrl + ", createdOn=" + createdOn + "]";
 	}
-
-
-	
 }

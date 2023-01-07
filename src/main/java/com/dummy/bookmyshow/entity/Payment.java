@@ -23,7 +23,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Entity
 @Table(name = "payment")
 public class Payment implements Serializable {
-
 	private static final long serialVersionUID = 1L;
 
 	@Id

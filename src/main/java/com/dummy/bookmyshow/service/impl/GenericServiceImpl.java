@@ -25,6 +25,7 @@ import com.dummy.bookmyshow.enums.NotificationType;
 import com.dummy.bookmyshow.enums.PaymentMethod;
 import com.dummy.bookmyshow.enums.Status;
 import com.dummy.bookmyshow.repository.BookingRepository;
+import com.dummy.bookmyshow.repository.ConcessionRepository;
 import com.dummy.bookmyshow.repository.MovieRepository;
 import com.dummy.bookmyshow.repository.NotificationRepository;
 import com.dummy.bookmyshow.repository.PaymentRepository;
@@ -41,13 +42,13 @@ public class GenericServiceImpl {
 	private static final String DO_NOT_REPLY_DUMMY_BMS_COM = "doNotReply@dummy.bms.com";
 
 	@Autowired
-	private TheaterRepository theaterRepo;
+	private TheaterRepository theaterRepository;
 
 	@Autowired
-	private MovieRepository movieRepo;
+	private MovieRepository movieRepository;
 
 	@Autowired
-	private ScreenRepository screenRepo;
+	private ScreenRepository screenRepository;
 
 	@Autowired
 	private SeatMatrixRepository matrixRepository;
@@ -62,6 +63,9 @@ public class GenericServiceImpl {
 	private UserRepository userRepository;
 
 	@Autowired
+	private ConcessionRepository concessionRepository;
+
+	@Autowired
 	private UrlServiceImpl urlService;
 
 	@Autowired
@@ -70,7 +74,7 @@ public class GenericServiceImpl {
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	public List<String> getSupportedCities() {
-		return this.theaterRepo.getSupportdCities();
+		return this.theaterRepository.getSupportdCities();
 	}
 
 	/**
@@ -82,7 +86,7 @@ public class GenericServiceImpl {
 	 */
 	public JSONArray getAvailableMovies(String city) throws JsonProcessingException {
 		this.LOGGER.info("getAvailableMovies() called in generic service with city: " + city);
-		List<Movie> availableMovies = this.movieRepo.getAvailableMovies(city);
+		List<Movie> availableMovies = this.movieRepository.getAvailableMovies(city);
 		this.LOGGER.info("getAvailableMovies() got " + availableMovies.size() + " movies in city: " + city);
 		JSONArray result = new JSONArray();
 		for (Movie movie : availableMovies) {
@@ -115,12 +119,12 @@ public class GenericServiceImpl {
 			throws JsonProcessingException {
 		this.LOGGER.info(
 				"getScreensShowingMovie() getting screens which are showing movie : " + movieId + " in city: " + city);
-		List<Theater> theatersShowingThisMovie = this.theaterRepo.getScreensShowingMovie(theaterId, city);
+		List<Theater> theatersShowingThisMovie = this.theaterRepository.getScreensShowingMovie(theaterId, city);
 		this.LOGGER.info("getScreensShowingMovie() got " + theatersShowingThisMovie.size()
 				+ " screens which are showing movie : " + movieId + " in city: " + city);
 		JSONObject result = new JSONObject();
 		for (Theater theater : theatersShowingThisMovie) {
-			List<Screen> screens = this.screenRepo.findScreenByTheaterIdAndMovieId(theater.getTheaterId(), movieId);
+			List<Screen> screens = this.screenRepository.findScreenByTheaterIdAndMovieId(theater.getTheaterId(), movieId);
 			JSONArray screensArray = new JSONArray();
 			for (Screen screen : screens) {
 				ObjectMapper mapper = new ObjectMapper();
@@ -274,7 +278,7 @@ public class GenericServiceImpl {
 		result.put("userDtails", userDetails);
 
 		JSONObject movieDetails = new JSONObject();
-		Optional<Movie> movie = this.movieRepo.findById(booking.getMovieId());
+		Optional<Movie> movie = this.movieRepository.findById(booking.getMovieId());
 		Movie movieFromDb = movie.get();
 		if (movieFromDb == null)
 			throw new DummyBookMyShowException("There is no movie found with id  " + booking.getMovieId());
@@ -282,7 +286,7 @@ public class GenericServiceImpl {
 		result.put("movieDetails", movieDetails);
 
 		JSONObject theaterDetails = new JSONObject();
-		Optional<Theater> theater = this.theaterRepo.findById(booking.getTheaterId());
+		Optional<Theater> theater = this.theaterRepository.findById(booking.getTheaterId());
 		Theater theaterFromDb = theater.get();
 		if (theaterFromDb == null)
 			throw new DummyBookMyShowException("There is no theater found with id  " + booking.getTheaterId());
@@ -340,5 +344,4 @@ public class GenericServiceImpl {
 		String shorturl = this.urlService.convertToShortUrl(url);
 		tobeSendNotification.setTinyUrl(shorturl);
 	}
-
 }

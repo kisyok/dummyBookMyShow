@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class Offer implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
-	@Column(name = "id", updatable = false,nullable = false)
+	@Column(name = "id", updatable = false, nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
@@ -136,5 +136,4 @@ public class Offer implements Serializable {
 				+ ", validStart=" + validStart + ", validEnd=" + validEnd + ", createdOn=" + createdOn + ", updatedOn="
 				+ updatedOn + ", deleted=" + deleted + "]";
 	}
-	
 }

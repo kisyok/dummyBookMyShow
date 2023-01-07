@@ -46,7 +46,7 @@ public class UserController {
 	private JwtUtils jwtUtils;
 
 	@Autowired
-	private UserRepository userReposiitory;
+	private UserRepository userRepository;
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -60,7 +60,7 @@ public class UserController {
 	public ResponseEntity<Object> getUserDetails(@RequestParam("userName") String userName) {
 		this.LOGGER.info(" getUser () with input params:  " + userName);
 		try {
-			User user = this.userReposiitory.findUserByUserName(userName);
+			User user = this.userRepository.findUserByUserName(userName);
 			this.LOGGER.info(" getUser () found the user with input username " + user.toString());
 			
 			ObjectMapper mapper = new ObjectMapper();
@@ -92,7 +92,7 @@ public class UserController {
 			newUser.setUserName(userName);
 			newUser.setCreatedOn(LocalDateTime.now());
 			this.LOGGER.info("addUser() setting username as   " + newUser.getUserName());
-			this.userReposiitory.save(newUser);
+			this.userRepository.save(newUser);
 			this.LOGGER.info("successfully saved user object " + newUser.toString());
 			return new ResponseEntity<>(this.responseParser.build(HttpStatus.CREATED.value(), "Successfully saved user with user name: "+newUser.getUserName(),
 					"Successfully saved user with user name: "+newUser.getUserName()), HttpStatus.CREATED);

@@ -19,11 +19,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Entity
 @Table(name = "seat_matrix")
 public class SeatMatrix implements Serializable {
-
 	private static final long serialVersionUID = 1L;
+
 	@EmbeddedId
 	private SeatMatrixPk primaryKey;
-
 
 	@Column(name = "booked")
 	private boolean booked;
@@ -111,5 +110,4 @@ public class SeatMatrix implements Serializable {
 		return "SeatMatrix [primaryKey=" + primaryKey + ", booked=" + booked + ", seatType=" + seatType + ", createdOn="
 				+ createdOn + ", updatedOn=" + updatedOn + ", deleted=" + deleted + ", price=" + price + "]";
 	}
-
 }

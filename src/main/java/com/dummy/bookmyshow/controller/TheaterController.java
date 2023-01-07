@@ -26,12 +26,14 @@ import com.dummy.bookmyshow.util.ResponseParser;
 @Component
 @Configuration
 public class TheaterController {
-
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
 	@Autowired
 	private TheaterRepository theaterRepo;
+
 	@Autowired
 	private ResponseParser responseParser;
+
 	@Autowired
 	private UserRepository userRepo;
 
@@ -55,21 +57,17 @@ public class TheaterController {
 			return new ResponseEntity<>(this.responseParser.build(HttpStatus.CREATED.value(),
 					"Successfully registered new theater with thaterId: " + theaterId,
 					"Successfully registered new theater with theaterId: " + theaterId), HttpStatus.CREATED);
-
 		} catch (IllegalArgumentException e) {
 			this.LOGGER.error("Error registering theater object " + e.getMessage());
 			return new ResponseEntity<>(
 					this.responseParser.build(HttpStatus.BAD_REQUEST.value(), e.getMessage(), e.getMessage()),
 					HttpStatus.BAD_REQUEST);
-
 		} catch (Exception ex) {
 			this.LOGGER.error("Error registering theater object " + ex.getMessage());
 			return new ResponseEntity<>(this.responseParser.build(HttpStatus.INTERNAL_SERVER_ERROR.value(),
 					ex.getMessage(), ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
 	}
-
 
 	private void validateInput(Theater theater) {
 		try {
@@ -84,12 +82,9 @@ public class TheaterController {
 			Assert.isTrue(existingUser != null,
 					"Invalid user name passed, no user found with id:  " + theater.getUserName());
 			Assert.isTrue((existingUser.getUserType().toString().equals("ADMIN")) , "User is not allowed to add the theater, Only admin user can add a theater");
-
 		} catch (IllegalArgumentException e) {
 			this.LOGGER.error(e.getMessage());
 			throw new IllegalArgumentException(e.getMessage());
-
 		}
 	}
-
 }

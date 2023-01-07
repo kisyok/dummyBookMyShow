@@ -7,7 +7,6 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class ScreenPk implements Serializable {
-
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "theater_id", nullable = false)
@@ -42,9 +41,4 @@ public class ScreenPk implements Serializable {
 	public void setStartsAt(String startsAt) {
 		this.startsAt = startsAt;
 	}
-
-	
-
-	
-
 }
