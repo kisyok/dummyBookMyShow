@@ -9,6 +9,14 @@ public class AuthRequest {
 	@JsonProperty
 	private String password;
 
+	public AuthRequest(String username, String password) {
+		this.username = username;
+		this.password = password;
+	}
+
+	public AuthRequest() {
+	}
+
 	public String getUsername() {
 		return username;
 	}

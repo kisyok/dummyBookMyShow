@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,7 @@ import com.dummy.bookmyshow.entity.User;
 import com.dummy.bookmyshow.enums.UserType;
 import com.dummy.bookmyshow.repository.UserRepository;
 import com.dummy.bookmyshow.security.AuthRequest;
+import com.dummy.bookmyshow.security.CustomUserDetailService;
 import com.dummy.bookmyshow.security.JwtUtils;
 import com.dummy.bookmyshow.util.ResponseParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,6 +52,9 @@ public class UserController {
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
+
+	@Autowired
+	private CustomUserDetailService customUserDetailService;
 
 	/**
 	 * get the user details
@@ -125,7 +130,9 @@ public class UserController {
 					"getToken() called with username as : " + authRequest.getUsername() + " and password as : *****");
 			authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-			String token = jwtUtils.generateToken(authRequest.getUsername());
+			
+			final UserDetails userDetails = customUserDetailService.loadUserByUsername(authRequest.getUsername());
+			String token = jwtUtils.generateToken(userDetails);
 			this.LOGGER.info("getToken() successfully got the jwt token " + token);
 			result.put("token", token);
 			result.put("status", "success");
