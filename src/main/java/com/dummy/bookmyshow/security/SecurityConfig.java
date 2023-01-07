@@ -80,6 +80,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.antMatchers("/v1/getUserDetails").hasAnyRole("ADMIN", "NORMAL")
 			.antMatchers("/v1/token").permitAll()
 
+			// concession controller
+			.antMatchers("/v1/addConcession").hasRole("ADMIN")
+			.antMatchers("/v1/getConcessionDetails").hasRole("ADMIN")
+			.antMatchers("/v1/editConcessionDetails").hasRole("ADMIN")
+			.antMatchers("/v1/orderConcession").hasRole("NORMAL")
+
 			.antMatchers("/css/**").permitAll()
 			.antMatchers("/js/**").permitAll()
 			.antMatchers("/favicon.ico").permitAll()
