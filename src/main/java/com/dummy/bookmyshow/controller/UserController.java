@@ -129,7 +129,7 @@ public class UserController {
 			this.LOGGER.info(
 					"getToken() called with username as : " + authRequest.getUsername() + " and password as : *****");
 			authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+					new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));	
 			
 			final UserDetails userDetails = customUserDetailService.loadUserByUsername(authRequest.getUsername());
 			String token = jwtUtils.generateToken(userDetails);
@@ -176,9 +176,6 @@ public class UserController {
 			}
 			Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(user.getEmail());
 			Assert.isTrue(matcher.find(), "Invalid email id");
-			Pattern p = Pattern.compile("(0/91)?[7-9][0-9]{9}");
-			Matcher m = p.matcher(user.getMobileNumber());
-			Assert.isTrue((m.find() && m.group().equals(user.getMobileNumber())), "Invalid mobile number");
 		} catch (IllegalArgumentException e) {
 			this.LOGGER.error("input error ", e.getMessage());
 			throw new IllegalArgumentException(e.getMessage());
