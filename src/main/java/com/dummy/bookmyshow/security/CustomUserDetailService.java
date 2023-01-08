@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.dummy.bookmyshow.entity.User;
-import com.dummy.bookmyshow.enums.UserType;
 import com.dummy.bookmyshow.repository.UserRepository;
 
 @Service
