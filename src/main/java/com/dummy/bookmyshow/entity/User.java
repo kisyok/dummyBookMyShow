@@ -12,8 +12,10 @@ import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.dummy.bookmyshow.enums.UserType;
+import com.dummy.bookmyshow.security.SecurityConfig;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
@@ -112,7 +114,9 @@ public class User implements Serializable {
 	}
 
 	public void setAuthentication(String authentication) {
-		this.authentication = authentication;
+		PasswordEncoder encoder = new SecurityConfig().passwordEncoder();
+		
+		this.authentication = encoder.encode(authentication);
 	}
 
 	public LocalDateTime getCreatedOn() {
