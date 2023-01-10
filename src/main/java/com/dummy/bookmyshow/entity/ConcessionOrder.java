@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "concession")
+@Table(name = "concession_order")
 public class ConcessionOrder implements Serializable {
     @Id
     @Column(name = "concession_order_id", updatable = false, nullable = false)
@@ -19,7 +19,7 @@ public class ConcessionOrder implements Serializable {
     private Long concessionOrderId;
 
     @Column(name = "booking_id")
-    private Long bookingId;
+    private Long booking_id;
 
     @Column(name = "concessions")
     private String concessions;
@@ -33,10 +33,10 @@ public class ConcessionOrder implements Serializable {
     public ConcessionOrder() {
     }
 
-    public ConcessionOrder(Long concessionOrderId, Long bookingId, String concessions, String description,
+    public ConcessionOrder(Long concessionOrderId, Long booking_id, String concessions, String description,
             BigDecimal total_concession_price) {
         this.concessionOrderId = concessionOrderId;
-        this.bookingId = bookingId;
+        this.booking_id = booking_id;
         this.concessions = concessions;
         this.description = description;
         this.total_concession_price = total_concession_price;
@@ -51,11 +51,11 @@ public class ConcessionOrder implements Serializable {
     }
 
     public Long getConcessionBookingId() {
-        return bookingId;
+        return booking_id;
     }
 
-    public void setConcessionBookingId(Long bookingId) {
-        this.bookingId = bookingId;
+    public void setConcessionBookingId(Long booking_id) {
+        this.booking_id = booking_id;
     }
 
     public String getConcessions() {
@@ -84,7 +84,7 @@ public class ConcessionOrder implements Serializable {
 
     @Override
     public String toString() {
-        return "Concession [concessionId=" + concessionOrderId + ", bookingId=" + bookingId
+        return "Concession [concessionId=" + concessionOrderId + ", bookingId=" + booking_id
                 + ", concessions=" + concessions + ", description=" + description + ", totalPrice="
                 + total_concession_price + "]";
     }

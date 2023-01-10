@@ -54,14 +54,16 @@ public class ConcessionController {
     @RequestMapping(value = "/addConcession", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<Object> addConcession(@RequestBody List<Concession> concessions) {
         try {
+            this.LOGGER.info("\n\n\n");
             this.LOGGER.info("addConcession() called with " + concessions.size() + " concessions");
             for (Concession concession : concessions) {
+                this.LOGGER.info("\n\n");
+                this.LOGGER.info("The concession object : \n" + concession.toString());
                 validateInput(concession);
                 this.LOGGER.info("addConcession() saving concession as " + concession.getConcessionId());
                 this.concessionRepository.save(concession);
                 this.LOGGER.info("addConcession() saved concession as " + concession.getConcessionId() + " in DB");
             }
-
             return new ResponseEntity<>(this.responseParser.build(HttpStatus.CREATED.value(),
                     "Successfully saved concession", "Successfully saved concession"), HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
@@ -105,8 +107,37 @@ public class ConcessionController {
      * @param concession
      */
     @RequestMapping(value = "/editConcession", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public void editConcession(@RequestBody List<Concession> concessions) {
-        return;
+    public ResponseEntity<Object> editConcession(@RequestBody List<Concession> concessions) {
+        try {
+            this.LOGGER.info("\n\n\n");
+            this.LOGGER.info("editConcession() called with " + concessions.size() + " concessions");
+            for (Concession concession : concessions) {
+                this.LOGGER.info("\n\n");
+                this.LOGGER.info("The concession object : \n" + concession.toString());
+
+                // Validate if null
+                validateInputUpdate(concession);
+
+                if (this.concessionRepository.existsById(concession.getConcessionId())) {
+                    this.LOGGER.info("editConcession() updating concession as " + concession.getConcessionId());
+                    this.concessionRepository.save(concession);
+                } else {
+                    throw new IllegalArgumentException(
+                            "The Id given does not exists in DB : " + concession.getConcessionId());
+                }
+
+            }
+            return new ResponseEntity<>(this.responseParser.build(HttpStatus.CREATED.value(),
+                    "Successfully edited concession", "Successfully edited concession"), HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            this.LOGGER.error("Error edited concession  " + e.getMessage());
+            return new ResponseEntity<>(this.responseParser.build(HttpStatus.BAD_REQUEST.value(),
+                    e.getMessage(), e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            this.LOGGER.error("Error edited concession object " + ex.getMessage());
+            return new ResponseEntity<>(this.responseParser.build(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    ex.getMessage(), ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -127,67 +158,84 @@ public class ConcessionController {
     }
 
     /**
-     * Order concessions
-     * TODO : Only customer user is allowed to use this API
+     * This method will validate the input for concession object
      * 
+     * @param concession
+     */
+    private void validateInputUpdate(Concession concession) {
+        try {
+            Assert.notNull(concession, "Concession object must not be null");
+            Assert.notNull(concession.getConcessionId(), "Concession ID must not be null");
+        } catch (IllegalArgumentException e) {
+            this.LOGGER.error(e.getMessage());
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    /**
+     * Order concessions
+     * TODO : Order Concessions for User
+     *
      * @param order_concession
      * @return
      */
     @RequestMapping(value = "/orderConcession", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<Object> orderConcession(@RequestBody List<ConcessionOrder> concessionOrders) {
         try {
-            this.LOGGER.info("orderConcession() called with " + concessionOrders.size() + " concession orders");
+            this.LOGGER.info("\n\n\n");
+            this.LOGGER.info("orderConcession() called with " + concessionOrders.size() +
+                    " concession orders");
             for (ConcessionOrder concessionOrder : concessionOrders) {
+                this.LOGGER.info("\n\n");
+                this.LOGGER.info("The Concession Order : \n" + concessionOrder.toString() + "\n");
                 validateOrderInput(concessionOrder);
-                this.LOGGER.info("Checking if Booking ID " + concessionOrder.getConcessionBookingId() + ", exists");
+                this.LOGGER.info("Checking if Booking ID " +
+                        concessionOrder.getConcessionBookingId() + ", exists in DB");
                 if (this.bookingRepository.existsById(concessionOrder.getConcessionBookingId())) {
+                    this.LOGGER.info("Booking ID " +
+                            concessionOrder.getConcessionBookingId() + ", exists in DB");
 
                     // Convert into array of strings
-                    String[] concessionsOrdered = splitString(concessionOrder.getConcessions(), ",");
+                    String[] concessionsOrdered = splitString(concessionOrder.getConcessions(),
+                            ",");
 
-                    // Delete Dupplication
-                    String[] nonDuplicatedConcessions = removeDuplicates(concessionsOrdered);
+                    this.LOGGER.info("Concessions Ordered : " + Arrays.toString(concessionsOrdered));
 
-                    // Check if any of the concession id exists
-                    boolean flag = true;
-                    // BigDecimal total_Price = new BigDecimal( 0);
-                    for (String concession : nonDuplicatedConcessions) {
+                    // Calculate Total
+                    BigDecimal total_Price = new BigDecimal(0);
+                    for (String concession : concessionsOrdered) {
                         if (!this.concessionRepository.existsById(Long.parseLong(concession))) {
-                            flag = false;
                             throw new IllegalArgumentException(
                                     "No concession with the given ID: " + concession + ", exists");
-
                         } else {
-                            // Concession theConcession =
-                            // this.concessionRepository.getOne(Long.parseLong(concession)) ;
-                            // total_Price.add(theConcession.getPrice());
+                            Concession theConcession = this.concessionRepository.getOne(Long.parseLong(concession));
+                            this.LOGGER.info("Concession Ordered : \n" + theConcession.toString() + "\n");
+                            this.LOGGER.info("Concession Ordered Price : " + theConcession.getPrice());
+                            this.LOGGER.info("Adding Operation : " + total_Price + " + " + theConcession.getPrice());
+                            total_Price = total_Price.add(theConcession.getPrice());
                             continue;
                         }
                     }
 
-                    if (flag) {
-                        this.concessionOrderRepository.save(concessionOrder);
-                    }
+                    concessionOrder.setTotalPrice(total_Price);
+                    this.LOGGER.info("The Concession Order After Calculation : \n" + concessionOrder.toString() + "\n");
+                    this.concessionOrderRepository.save(concessionOrder);
 
                 } else {
                     throw new IllegalArgumentException(
-                            "The Booking Id given is invalid : " + concessionOrder.getConcessionBookingId());
+                            "The Booking Id given is invalid : " +
+                                    concessionOrder.getConcessionBookingId());
                 }
-                // this.LOGGER.info("addConcession() saving concession as " +
-                // concession.getConcessionId());
-                // this.concessionRepository.save(concession);
-                // this.LOGGER.info("addConcession() saved concession as " +
-                // concession.getConcessionId() + " in DB");
             }
-
             return new ResponseEntity<>(this.responseParser.build(HttpStatus.CREATED.value(),
-                    "Successfully saved concession", "Successfully saved concession"), HttpStatus.CREATED);
+                    "Successfully saved concession order", "Successfully saved concession order"),
+                    HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
-            this.LOGGER.error("Error adding concession  " + e.getMessage());
+            this.LOGGER.error("Error adding concession order " + e.getMessage());
             return new ResponseEntity<>(this.responseParser.build(HttpStatus.BAD_REQUEST.value(),
                     e.getMessage(), e.getMessage()), HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
-            this.LOGGER.error("Error adding concession object " + ex.getMessage());
+            this.LOGGER.error("Error adding concession order object " + ex.getMessage());
             return new ResponseEntity<>(this.responseParser.build(HttpStatus.INTERNAL_SERVER_ERROR.value(),
                     ex.getMessage(), ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -203,8 +251,6 @@ public class ConcessionController {
             Assert.notNull(concessionOrder, "Concession object must not be null");
             Assert.notNull(concessionOrder.getConcessionBookingId(), "Booking ID must not be null or empty");
             Assert.hasLength(concessionOrder.getConcessions(), "Concession description must not be null or empty");
-            Assert.isTrue(concessionOrder.getTotalPrice().compareTo(new BigDecimal(0.0)) > 0,
-                    "Total Price must not be 0.0 or less");
         } catch (IllegalArgumentException e) {
             this.LOGGER.error(e.getMessage());
             throw new IllegalArgumentException(e.getMessage());

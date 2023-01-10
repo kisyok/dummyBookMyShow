@@ -82,7 +82,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.antMatchers("/v1/addConcession").hasRole("ADMIN")
 			.antMatchers("/v1/getConcessionDetails").hasRole("ADMIN")
 			.antMatchers("/v1/editConcessionDetails").hasRole("ADMIN")
-			.antMatchers("/v1/orderConcession").hasRole("NORMAL")
+			.antMatchers("/v1/orderConcession").hasAnyRole("ADMIN", "NORMAL")
 
 			.antMatchers("/css/**").permitAll()
 			.antMatchers("/js/**").permitAll()
