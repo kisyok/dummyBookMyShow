@@ -402,3 +402,19 @@ CREATE TABLE `concession` (
 LOCK TABLES `concession` WRITE;
 INSERT INTO `concession` VALUES (1, 'Hot Dog', 'Hearty snack', 1.50),(2, 'Pop Corn', 'Classic movie snack', 2.0),(3, 'Pepsi', 'Carbonated sweet beverage', 1.0);
 UNLOCK TABLES;
+
+
+DROP TABLE IF EXISTS `concession_order`;
+CREATE TABLE `concession_order` (
+  `concession_order_id` bigint NOT NULL AUTO_INCREMENT,
+  `booking_id` bigint NOT NULL,
+  `concessions` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `total_concession_price` decimal(38, 2) DEFAULT 0.0,
+  PRIMARY KEY (`concession_order_id`),
+  FOREIGN KEY (booking_id) REFERENCES booking(booking_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+LOCK TABLES `concession_order` WRITE;
+INSERT INTO `concession_order` VALUES (1, 2, '1,1,2,3', "More Cheese on Hot Dog", 6.0);
+UNLOCK TABLES;
