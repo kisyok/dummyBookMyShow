@@ -76,7 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			// user controller
 			.antMatchers("/v1/addUser").permitAll()
 			.antMatchers("/v1/getUserDetails").hasAnyRole("ADMIN", "NORMAL")
-			.antMatchers("/v1/token").permitAll()
+			.antMatchers("/v1/login").permitAll()
 
 			// concession controller
 			.antMatchers("/v1/addConcession").hasRole("ADMIN")
