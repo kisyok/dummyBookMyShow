@@ -122,7 +122,7 @@ public class UserController {
 	 * @param authRequest
 	 * @return
 	 */
-	@RequestMapping(value = "/token", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json")
 	public ResponseEntity<Object> getToken(@RequestBody AuthRequest authRequest) {
 		JSONObject result = new JSONObject();
 		try {
