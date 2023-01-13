@@ -16,7 +16,7 @@ public class Concession implements Serializable {
     @Id
     @Column(name = "concession_id", updatable = false, nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long concessionId;    
+    private Long concessionId = null;
 
     @Column(name = "name")
     private String name;
