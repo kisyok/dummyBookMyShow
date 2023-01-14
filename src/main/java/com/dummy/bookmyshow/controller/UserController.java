@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -125,8 +126,12 @@ public class UserController {
 		try {
 			this.LOGGER.info(
 					"getToken() called with username as : " + authRequest.getUsername() + " and password as : *****");
-			authenticationManager.authenticate(
+			try {
+				authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));	
+			} catch (BadCredentialsException e) {
+				throw new Exception("Incorrect username or password", e);
+			}
 			
 			final UserDetails userDetails = customUserDetailService.loadUserByUsername(authRequest.getUsername());
 			String token = jwtUtils.generateToken(userDetails);
