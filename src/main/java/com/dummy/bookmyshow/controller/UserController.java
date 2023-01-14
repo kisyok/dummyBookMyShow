@@ -78,7 +78,6 @@ public class UserController {
 			return new ResponseEntity<>(this.responseParser.build(HttpStatus.INTERNAL_SERVER_ERROR.value(),
 					ex.getMessage(), ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
 	}
 
 	/**
@@ -112,9 +111,7 @@ public class UserController {
 			return new ResponseEntity<>(
 					this.responseParser.build(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), e.getMessage()),
 					HttpStatus.INTERNAL_SERVER_ERROR);
-
 		}
-
 	}
 
 	/**
@@ -145,7 +142,6 @@ public class UserController {
 			e.printStackTrace();
 			return new ResponseEntity<>(result.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
 	}
 
 	/**
@@ -180,7 +176,6 @@ public class UserController {
 			this.LOGGER.error("input error ", e.getMessage());
 			throw new IllegalArgumentException(e.getMessage());
 		}
-
 	}
 
 	/**
@@ -189,7 +184,5 @@ public class UserController {
 	 */
 	private String getUserName(User user) {
 		return (user.getLastName() + user.getFirstName() + user.getMobileNumber());
-
 	}
-
 }

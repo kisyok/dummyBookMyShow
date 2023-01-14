@@ -31,8 +31,8 @@ import com.dummy.bookmyshow.util.ResponseParser;
 @Component
 @Configuration
 public class CastController {
-
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+	
 	@Autowired
 	private ResponseParser responseParser;
 

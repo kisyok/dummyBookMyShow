@@ -92,9 +92,6 @@ public class MovieController {
 		} catch (IllegalArgumentException e) {
 			this.LOGGER.error(e.getMessage());
 			throw new IllegalArgumentException(e.getMessage());
-
 		}
-
 	}
-
 }
