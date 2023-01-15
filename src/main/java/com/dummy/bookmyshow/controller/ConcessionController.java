@@ -61,6 +61,9 @@ public class ConcessionController {
                 this.LOGGER.info("The concession object : \n" + concession.toString());
                 validateInput(concession);
                 this.LOGGER.info("addConcession() saving concession as " + concession.getConcessionId());
+                if(concession.getConcessionId() == null) {
+                    concession.setConcessionId(new Long(0));
+                }
                 if(!this.concessionRepository.existsById(concession.getConcessionId())) {
                     this.concessionRepository.save(concession);
                 }
