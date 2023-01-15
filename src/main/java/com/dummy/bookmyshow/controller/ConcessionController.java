@@ -90,7 +90,7 @@ public class ConcessionController {
     public ResponseEntity<Object> deleteConcessions(@RequestBody List<Long> concessionIds) {
         try {
             this.LOGGER.info("deleteConcession() called with " + concessionIds.size() + " concessions");
-            if(concessionIds.size() == 0 || concessionIds == null) {
+            if (concessionIds.size() == 0 || concessionIds == null) {
                 throw new IllegalArgumentException("The list must not be empty or null");
             }
             for (Long concessionId : concessionIds) {
@@ -103,11 +103,12 @@ public class ConcessionController {
             }
             this.LOGGER.info("deleteConcession() successfully deleted all concession: " + concessionIds);
             return new ResponseEntity<>(this.responseParser.build(HttpStatus.CREATED.value(),
-            "Successfully deleted all concessions", "Successfully deleted all concessions"), HttpStatus.CREATED);
+                    "Successfully deleted all concessions", "Successfully deleted all concessions"),
+                    HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             this.LOGGER.error("Error deleting concession  " + e.getMessage());
             return new ResponseEntity<>(this.responseParser.build(HttpStatus.BAD_REQUEST.value(),
-            e.getMessage(), e.getMessage()), HttpStatus.BAD_REQUEST);
+                    e.getMessage(), e.getMessage()), HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
             this.LOGGER.error("Error deleting concession object " + ex.getMessage());
             return new ResponseEntity<>(this.responseParser.build(HttpStatus.INTERNAL_SERVER_ERROR.value(),
@@ -131,7 +132,8 @@ public class ConcessionController {
 
                 validateInputUpdate(concession);
 
-                if (this.concessionRepository.existsById(concession.getConcessionId()) && concession.getConcessionId() != 0) {
+                if (this.concessionRepository.existsById(concession.getConcessionId())
+                        && concession.getConcessionId() != 0) {
                     this.LOGGER.info("editConcession() updating concession as " + concession.getConcessionId());
                     this.concessionRepository.save(concession);
                 } else {
@@ -164,10 +166,10 @@ public class ConcessionController {
             this.LOGGER.info("getAllConcessions() called");
             return new ResponseEntity<>(this.concessionRepository.findAll(), HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
-            this.LOGGER.error("Error edited concession  " + e.getMessage());
+            this.LOGGER.error("Error fetching concession  " + e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
-            this.LOGGER.error("Error edited concession object " + ex.getMessage());
+            this.LOGGER.error("Error fetching concession object " + ex.getMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -230,7 +232,9 @@ public class ConcessionController {
             return new ResponseEntity<>(this.responseParser.build(HttpStatus.CREATED.value(),
                     "Successfully saved concession order", "Successfully saved concession order"),
                     HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
+        } catch (
+
+        IllegalArgumentException e) {
             this.LOGGER.error("Error adding concession order " + e.getMessage());
             return new ResponseEntity<>(this.responseParser.build(HttpStatus.BAD_REQUEST.value(),
                     e.getMessage(), e.getMessage()), HttpStatus.BAD_REQUEST);
@@ -248,14 +252,58 @@ public class ConcessionController {
      * @param concessionOrderId
      * @return
      */
+    @RequestMapping(value = "/getOneConcessionOrder", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<ConcessionOrder> getOneConcessionOrder(@RequestBody ConcessionOrder concessionOrder) {
+        try {
+            this.LOGGER.info("\n\n\n");
+            this.LOGGER.info("getOneConcessionOrder() called");
+            validateFetchOrderInput(concessionOrder);
+            this.LOGGER.info(concessionOrder.toString());
+            if (this.concessionOrderRepository.existsById(concessionOrder.getConcessionOrderId())) {
+                this.LOGGER.info("Order ID " +
+                        concessionOrder.getConcessionOrderId() + ", exists in DB");
+            } else {
+                throw new IllegalArgumentException(
+                        "The Order Id given is invalid : " +
+                                concessionOrder.getConcessionOrderId());
+            }
+            ConcessionOrder theConcessionOrder = this.concessionOrderRepository
+                    .findById(concessionOrder.getConcessionOrderId()).orElseThrow(() -> new IllegalArgumentException(
+                            "The Order Id given is invalid : " + concessionOrder.getConcessionOrderId()));
+            this.LOGGER.info(theConcessionOrder.toString());
+            return new ResponseEntity<>(
+                    theConcessionOrder,
+                    HttpStatus.FOUND);
+        } catch (IllegalArgumentException e) {
+            this.LOGGER.error("Error fetching concession order  " + e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            this.LOGGER.error("Error fetching concession object " + ex.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     /**
      * View All Order concessions
-     * TODO : View Order concessions for Admin
+     * TODO : View All Order concessions for Admin
      *
      * @param concessionOrderId
      * @return
      */
+    @RequestMapping(value = "/getAllConcessionOrders", method = RequestMethod.POST)
+    public ResponseEntity<List<ConcessionOrder>> getAllConcessionOrders() {
+        try {
+            this.LOGGER.info("\n\n\n");
+            this.LOGGER.info("getAllConcessions() called");
+            return new ResponseEntity<>(this.concessionOrderRepository.findAll(), HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            this.LOGGER.error("Error fetching concession order " + e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            this.LOGGER.error("Error fetching concession order object " + ex.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     /**
      * This method will validate the input for concession object
@@ -300,6 +348,21 @@ public class ConcessionController {
             Assert.notNull(concessionOrder, "Concession object must not be null");
             Assert.notNull(concessionOrder.getConcessionBookingId(), "Booking ID must not be null or empty");
             Assert.hasLength(concessionOrder.getConcessions(), "Concession description must not be null or empty");
+        } catch (IllegalArgumentException e) {
+            this.LOGGER.error(e.getMessage());
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    /**
+     * This method will validate the input for concession object
+     * 
+     * @param concessionOrder
+     */
+    private void validateFetchOrderInput(ConcessionOrder concessionOrder) {
+        try {
+            Assert.notNull(concessionOrder, "Concession object must not be null");
+            Assert.notNull(concessionOrder.getConcessionOrderId(), "Order ID must not be null or empty");
         } catch (IllegalArgumentException e) {
             this.LOGGER.error(e.getMessage());
             throw new IllegalArgumentException(e.getMessage());
