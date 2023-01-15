@@ -61,23 +61,21 @@ public class ConcessionController {
                 this.LOGGER.info("The concession object : \n" + concession.toString());
                 validateInput(concession);
                 this.LOGGER.info("addConcession() saving concession as " + concession.getConcessionId());
-                if(!this.concessionRepository.existsById(concession.getConcessionId())) {
+                if (!this.concessionRepository.existsById(concession.getConcessionId())) {
                     this.concessionRepository.save(concession);
-                }
-                else {
-                    throw new IllegalArgumentException("Concession with the given ID " + concession.getConcessionId() + " already exist");
+                } else {
+                    throw new IllegalArgumentException(
+                            "Concession with the given ID " + concession.getConcessionId() + " already exist");
                 }
                 this.LOGGER.info("addConcession() saved concession as " + concession.getConcessionId() + " in DB");
             }
             return new ResponseEntity<>(this.responseParser.build(HttpStatus.CREATED.value(),
                     "Successfully saved concession", "Successfully saved concession"), HttpStatus.CREATED);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             this.LOGGER.error("Error adding concession  " + e.getMessage());
             return new ResponseEntity<>(this.responseParser.build(HttpStatus.BAD_REQUEST.value(),
                     e.getMessage(), e.getMessage()), HttpStatus.BAD_REQUEST);
-        } 
-        catch (Exception ex) {
+        } catch (Exception ex) {
             this.LOGGER.error("Error adding concession object " + ex.getMessage());
             return new ResponseEntity<>(this.responseParser.build(HttpStatus.INTERNAL_SERVER_ERROR.value(),
                     ex.getMessage(), ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -149,7 +147,7 @@ public class ConcessionController {
 
     /**
      * 
-     * @param 
+     * @param
      */
     @RequestMapping(value = "/getAllConcessions", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public ResponseEntity<List<Concession>> getAllConcessions() {
@@ -236,6 +234,22 @@ public class ConcessionController {
     }
 
     /**
+     * View Order concessions
+     * TODO : View Order concessions for User
+     *
+     * @param concessionOrderId
+     * @return
+     */
+
+    /**
+     * View All Order concessions
+     * TODO : View Order concessions for Admin
+     *
+     * @param concessionOrderId
+     * @return
+     */
+
+    /**
      * This method will validate the input for concession object
      * 
      * @param concession
@@ -270,7 +284,7 @@ public class ConcessionController {
     /**
      * This method will validate the input for concession object
      * 
-     * @param concession
+     * @param concessionOrder
      */
     private void validateOrderInput(ConcessionOrder concessionOrder) {
         try {
