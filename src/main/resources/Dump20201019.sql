@@ -393,9 +393,9 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `concession`;
 CREATE TABLE `concession` (
   `concession_id` bigint NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `price` decimal(38, 2) DEFAULT 0.0,
+  `name` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `price` decimal(38, 2) NOT NULL CHECK (`price` > 0.0),
   PRIMARY KEY (`concession_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

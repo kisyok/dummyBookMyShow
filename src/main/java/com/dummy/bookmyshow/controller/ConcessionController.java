@@ -52,7 +52,7 @@ public class ConcessionController {
      * @return
      */
     @RequestMapping(value = "/addConcessions", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Object> addConcession(@RequestBody List<Concession> concessions) {
+    public ResponseEntity<Object> addConcessions(@RequestBody List<Concession> concessions) {
         try {
             this.LOGGER.info("\n\n\n");
             this.LOGGER.info("addConcession() called with " + concessions.size() + " concessions");
@@ -89,9 +89,12 @@ public class ConcessionController {
      * @param concessionIds
      */
     @RequestMapping(value = "/deleteConcessions", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public void deleteConcession(@RequestBody List<Long> concessionIds) {
+    public ResponseEntity<Object> deleteConcessions(@RequestBody List<Long> concessionIds) {
         try {
             this.LOGGER.info("deleteConcession() called with " + concessionIds.size() + " concessions");
+            if(concessionIds.size() == 0 || concessionIds == null) {
+                throw new IllegalArgumentException("The list must not be empty or null");
+            }
             for (Long concessionId : concessionIds) {
                 this.LOGGER.info("deleteConcession() deleting concession as " + concessionId);
                 if (this.concessionRepository.existsById(concessionId)) {
@@ -101,10 +104,16 @@ public class ConcessionController {
                 }
             }
             this.LOGGER.info("deleteConcession() successfully deleted all concession: " + concessionIds);
+            return new ResponseEntity<>(this.responseParser.build(HttpStatus.CREATED.value(),
+            "Successfully deleted all concessions", "Successfully deleted all concessions"), HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             this.LOGGER.error("Error deleting concession  " + e.getMessage());
+            return new ResponseEntity<>(this.responseParser.build(HttpStatus.BAD_REQUEST.value(),
+            e.getMessage(), e.getMessage()), HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
             this.LOGGER.error("Error deleting concession object " + ex.getMessage());
+            return new ResponseEntity<>(this.responseParser.build(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    ex.getMessage(), ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -114,7 +123,7 @@ public class ConcessionController {
      * @param concession
      */
     @RequestMapping(value = "/editConcessions", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Object> editConcession(@RequestBody List<Concession> concessions) {
+    public ResponseEntity<Object> editConcessions(@RequestBody List<Concession> concessions) {
         try {
             this.LOGGER.info("\n\n\n");
             this.LOGGER.info("editConcession() called with " + concessions.size() + " concessions");
@@ -122,10 +131,9 @@ public class ConcessionController {
                 this.LOGGER.info("\n\n");
                 this.LOGGER.info("The concession object : \n" + concession.toString());
 
-                // Validate if null
                 validateInputUpdate(concession);
 
-                if (this.concessionRepository.existsById(concession.getConcessionId())) {
+                if (this.concessionRepository.existsById(concession.getConcessionId()) && concession.getConcessionId() != 0) {
                     this.LOGGER.info("editConcession() updating concession as " + concession.getConcessionId());
                     this.concessionRepository.save(concession);
                 } else {
@@ -245,6 +253,7 @@ public class ConcessionController {
             Assert.notNull(concession, "Concession object must not be null");
             Assert.hasLength(concession.getName(), "Concession name must not be null or empty");
             Assert.hasLength(concession.getDescription(), "Concession description must not be null or empty");
+            Assert.notNull(concession.getPrice(), "Concession price must not be null");
             Assert.isTrue(concession.getPrice().compareTo(new BigDecimal(0.0)) > 0, "Price must not be 0.0 or less");
         } catch (IllegalArgumentException e) {
             this.LOGGER.error(e.getMessage());
