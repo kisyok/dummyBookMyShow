@@ -79,9 +79,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.antMatchers("/v1/login").permitAll()
 
 			// concession controller
-			.antMatchers("/v1/addConcession").hasRole("ADMIN")
-			.antMatchers("/v1/getConcessionDetails").hasRole("ADMIN")
-			.antMatchers("/v1/editConcessionDetails").hasRole("ADMIN")
+			.antMatchers("/v1/addConcessions").hasRole("ADMIN")
+			.antMatchers("/v1/getAllConcessions").hasRole("ADMIN")
+			.antMatchers("/v1/editConcessions").hasRole("ADMIN")
+			.antMatchers("/v1/deleteConcessions").hasRole("ADMIN")
 			.antMatchers("/v1/orderConcession").hasAnyRole("ADMIN", "NORMAL")
 
 			.antMatchers("/css/**").permitAll()
@@ -91,5 +92,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 	}
-
 }

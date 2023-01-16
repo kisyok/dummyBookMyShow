@@ -25,7 +25,6 @@ import com.dummy.bookmyshow.enums.NotificationType;
 import com.dummy.bookmyshow.enums.PaymentMethod;
 import com.dummy.bookmyshow.enums.Status;
 import com.dummy.bookmyshow.repository.BookingRepository;
-import com.dummy.bookmyshow.repository.ConcessionRepository;
 import com.dummy.bookmyshow.repository.MovieRepository;
 import com.dummy.bookmyshow.repository.NotificationRepository;
 import com.dummy.bookmyshow.repository.PaymentRepository;
@@ -61,9 +60,6 @@ public class GenericServiceImpl {
 
 	@Autowired
 	private UserRepository userRepository;
-
-	@Autowired
-	private ConcessionRepository concessionRepository;
 
 	@Autowired
 	private UrlServiceImpl urlService;
